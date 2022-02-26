@@ -4,6 +4,7 @@ import { Typography } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import "./App.css";
 import styled from "@emotion/styled";
+import UploadForm from "./components/UploadForm/UploadForm";
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -25,16 +26,16 @@ const App: React.FC = () => {
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
       />
-      <StyledBox>
-        <Typography variant="body1">Hello World?</Typography>
-      </StyledBox>
+      {/* <StyledBox> */}
+      <UploadForm />
+      {/* </StyledBox> */}
     </div>
   );
 };
 
 export default App;
 
-const StyledBox = styled("div")<{ primary?: boolean }>`
-  border: 1px solid red;
-  color: ${({ primary }) => (primary ? "red" : "blue")};
-`;
+// const StyledBox = styled("div")<{ primary?: boolean }>`
+//   border: 1px solid red;
+//   color: ${({ primary }) => (primary ? "red" : "blue")};
+// `;
