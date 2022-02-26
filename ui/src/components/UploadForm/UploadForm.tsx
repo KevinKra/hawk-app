@@ -13,15 +13,34 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
+interface IUploadForm {
+  name: string;
+  size: "small" | "medium" | "large";
+  gender: "male" | "female";
+  length: number;
+  wingspan: number;
+  weight: number;
+  image: string;
+  color: string;
+  behavior: string;
+  habitat: string;
+}
+
 const UploadForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IUploadForm>({
+    name: "",
+    size: "small",
+    gender: "male",
     length: 0,
     wingspan: 0,
     weight: 0,
+    image: "",
+    color: "",
+    behavior: "",
+    habitat: "",
   });
 
   const handleInputChange = (e: any) => {
-    // console.log(e.target.name, e.target.value);
     const target = e.target.name;
     const value = e.target.value;
     setFormData({ ...formData, [target]: value });
@@ -35,40 +54,45 @@ const UploadForm = () => {
           fullWidth
           id="name"
           label="Name*"
-          placeholder="Some birdy"
+          placeholder="Osprey"
           variant="outlined"
+          name="name"
+          value={formData.name}
+          onChange={handleInputChange}
         />
       </SelectionWrapper>
       <SelectionWrapper>
         <Typography className="selection-title">Size</Typography>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Size</InputLabel>
+          <InputLabel id="hawk-size-label">Size</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={10}
-            label="Age"
-            //   onChange={}
+            labelId="hawk-size-label"
+            id="hawk-size"
+            value={formData.size}
+            label="Size"
+            name="size"
+            onChange={handleInputChange}
           >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            <MenuItem value={"small"}>Small</MenuItem>
+            <MenuItem value={"medium"}>Medium</MenuItem>
+            <MenuItem value={"large"}>Large</MenuItem>
           </Select>
         </FormControl>
       </SelectionWrapper>
       <SelectionWrapper>
         <Typography className="selection-title">Gender</Typography>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+          <InputLabel id="hawk-gender-label">Gender</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={"Male"}
+            labelId="hawk-gender-label"
+            id="hawk-gender"
+            value={formData.gender}
             label="Gender"
-            //   onChange={}
+            name="gender"
+            onChange={handleInputChange}
           >
-            <MenuItem value={"Male"}>Male</MenuItem>
-            <MenuItem value={"Female"}>Female</MenuItem>
+            <MenuItem value={"male"}>Male</MenuItem>
+            <MenuItem value={"female"}>Female</MenuItem>
           </Select>
         </FormControl>
       </SelectionWrapper>
@@ -119,7 +143,10 @@ const UploadForm = () => {
           fullWidth
           id="name"
           label="Image*"
-          placeholder="Some birdy"
+          name="image"
+          value={formData.image}
+          placeholder="link to image"
+          onChange={handleInputChange}
           variant="outlined"
         />
       </SelectionWrapper>
@@ -127,12 +154,12 @@ const UploadForm = () => {
         <Typography className="selection-title">Color</Typography>
         <TextField
           fullWidth
-          id="filled-multiline-flexible"
           label="Describe the hawk's color."
           multiline
           rows={3}
-          //   value={value}
-          //   onChange={handleChange}
+          name="color"
+          value={formData.color}
+          onChange={handleInputChange}
           variant="filled"
         />
       </SelectionWrapper>
@@ -140,12 +167,12 @@ const UploadForm = () => {
         <Typography className="selection-title">Behavior</Typography>
         <TextField
           fullWidth
-          id="filled-multiline-flexible"
           label="Describe the hawk's behavior."
           multiline
           rows={3}
-          //   value={value}
-          //   onChange={handleChange}
+          name="behavior"
+          value={formData.behavior}
+          onChange={handleInputChange}
           variant="filled"
         />
       </SelectionWrapper>
@@ -153,12 +180,12 @@ const UploadForm = () => {
         <Typography className="selection-title">Habitat</Typography>
         <TextField
           fullWidth
-          id="filled-multiline-flexible"
           label="Describe the hawk's habitat."
           multiline
           rows={3}
-          //   value={value}
-          //   onChange={handleChange}
+          name="habitat"
+          value={formData.habitat}
+          onChange={handleInputChange}
           variant="filled"
         />
       </SelectionWrapper>
