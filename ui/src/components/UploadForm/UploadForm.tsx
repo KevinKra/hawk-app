@@ -11,9 +11,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 
 const UploadForm = () => {
+  const [formData, setFormData] = useState({
+    length: 0,
+    wingspan: 0,
+    weight: 0,
+  });
+
+  const handleInputChange = (e: any) => {
+    // console.log(e.target.name, e.target.value);
+    const target = e.target.name;
+    const value = e.target.value;
+    setFormData({ ...formData, [target]: value });
+  };
+
   return (
     <StyledPaper elevation={3}>
       <SelectionWrapper>
@@ -61,36 +74,42 @@ const UploadForm = () => {
       </SelectionWrapper>
       <StyledDivider />
       <SelectionWrapper>
-        <Typography className="selection-title">Length (cm)</Typography>
+        <Typography className="selection-title">{`Length (${formData.length}cm)`}</Typography>
         <Slider
           size="small"
-          defaultValue={70}
-          aria-label="Small"
+          aria-label="length"
+          name="length"
+          value={formData.length}
+          onChange={handleInputChange}
           valueLabelDisplay="auto"
           min={5}
           max={125}
         />
       </SelectionWrapper>
       <SelectionWrapper>
-        <Typography className="selection-title">Wingspan (cm)</Typography>
+        <Typography className="selection-title">{`Wingspan (${formData.wingspan}cm)`}</Typography>
         <Slider
           size="small"
-          defaultValue={70}
-          aria-label="Small"
+          aria-label="wingspan"
+          name="wingspan"
+          value={formData.wingspan}
+          onChange={handleInputChange}
           valueLabelDisplay="auto"
           min={5}
           max={125}
         />
       </SelectionWrapper>
       <SelectionWrapper>
-        <Typography className="selection-title">Weight (g)</Typography>
+        <Typography className="selection-title">{`Weight (${formData.weight}g)`}</Typography>
         <Slider
           size="small"
-          defaultValue={70}
-          aria-label="Small"
+          aria-label="weight"
+          name="weight"
+          value={formData.weight}
+          onChange={handleInputChange}
           valueLabelDisplay="auto"
           min={5}
-          max={125}
+          max={250}
         />
       </SelectionWrapper>
       <StyledDivider />
@@ -111,7 +130,6 @@ const UploadForm = () => {
           id="filled-multiline-flexible"
           label="Describe the hawk's color."
           multiline
-          maxRows={3}
           rows={3}
           //   value={value}
           //   onChange={handleChange}
@@ -125,7 +143,6 @@ const UploadForm = () => {
           id="filled-multiline-flexible"
           label="Describe the hawk's behavior."
           multiline
-          maxRows={3}
           rows={3}
           //   value={value}
           //   onChange={handleChange}
@@ -139,7 +156,6 @@ const UploadForm = () => {
           id="filled-multiline-flexible"
           label="Describe the hawk's habitat."
           multiline
-          maxRows={3}
           rows={3}
           //   value={value}
           //   onChange={handleChange}
@@ -172,8 +188,8 @@ const SelectionWrapper = styled("form")<{ vertical?: boolean }>`
       ? `display: grid;
     grid-row-gap: .25rem;`
       : `display: grid;
-    grid-template-columns: 1.25fr 4fr;
-    grid-column-gap: 1rem;
+    grid-template-columns: 1.75fr 4fr;
+    grid-column-gap: 1.25rem;
     place-items: center;`}
 
   .selection-title {
