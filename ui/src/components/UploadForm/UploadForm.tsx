@@ -1,10 +1,13 @@
 import styled from "@emotion/styled";
 import {
+  Button,
+  Divider,
   FormControl,
   InputLabel,
   MenuItem,
   Paper,
   Select,
+  Slider,
   TextField,
   Typography,
 } from "@mui/material";
@@ -18,7 +21,7 @@ const UploadForm = () => {
         <TextField
           fullWidth
           id="name"
-          label="Required*"
+          label="Name*"
           placeholder="Some birdy"
           variant="outlined"
         />
@@ -56,6 +59,94 @@ const UploadForm = () => {
           </Select>
         </FormControl>
       </SelectionWrapper>
+      <StyledDivider />
+      <SelectionWrapper>
+        <Typography className="selection-title">Length (cm)</Typography>
+        <Slider
+          size="small"
+          defaultValue={70}
+          aria-label="Small"
+          valueLabelDisplay="auto"
+          min={5}
+          max={125}
+        />
+      </SelectionWrapper>
+      <SelectionWrapper>
+        <Typography className="selection-title">Wingspan (cm)</Typography>
+        <Slider
+          size="small"
+          defaultValue={70}
+          aria-label="Small"
+          valueLabelDisplay="auto"
+          min={5}
+          max={125}
+        />
+      </SelectionWrapper>
+      <SelectionWrapper>
+        <Typography className="selection-title">Weight (g)</Typography>
+        <Slider
+          size="small"
+          defaultValue={70}
+          aria-label="Small"
+          valueLabelDisplay="auto"
+          min={5}
+          max={125}
+        />
+      </SelectionWrapper>
+      <StyledDivider />
+      <SelectionWrapper>
+        <Typography className="selection-title">Image</Typography>
+        <TextField
+          fullWidth
+          id="name"
+          label="Image*"
+          placeholder="Some birdy"
+          variant="outlined"
+        />
+      </SelectionWrapper>
+      <SelectionWrapper vertical>
+        <Typography className="selection-title">Color</Typography>
+        <TextField
+          fullWidth
+          id="filled-multiline-flexible"
+          label="Describe the hawk's color."
+          multiline
+          maxRows={3}
+          rows={3}
+          //   value={value}
+          //   onChange={handleChange}
+          variant="filled"
+        />
+      </SelectionWrapper>
+      <SelectionWrapper vertical>
+        <Typography className="selection-title">Behavior</Typography>
+        <TextField
+          fullWidth
+          id="filled-multiline-flexible"
+          label="Describe the hawk's behavior."
+          multiline
+          maxRows={3}
+          rows={3}
+          //   value={value}
+          //   onChange={handleChange}
+          variant="filled"
+        />
+      </SelectionWrapper>
+      <SelectionWrapper vertical>
+        <Typography className="selection-title">Habitat</Typography>
+        <TextField
+          fullWidth
+          id="filled-multiline-flexible"
+          label="Describe the hawk's habitat."
+          multiline
+          maxRows={3}
+          rows={3}
+          //   value={value}
+          //   onChange={handleChange}
+          variant="filled"
+        />
+      </SelectionWrapper>
+      <StyledButton variant="contained">Save</StyledButton>
     </StyledPaper>
   );
 };
@@ -67,17 +158,30 @@ const StyledPaper = styled(Paper)`
   grid-gap: 1rem;
   padding: 1rem;
   margin: 1rem;
-  width: 500px;
+  width: 550px;
   border: 1px solid #ddd;
 `;
 
-const SelectionWrapper = styled("form")`
-  /* border: 1px solid red; */
-  display: grid;
-  grid-template-columns: 1fr 4fr;
-  place-items: center;
+const StyledDivider = styled(Divider)`
+  margin-bottom: 0.5rem;
+`;
+
+const SelectionWrapper = styled("form")<{ vertical?: boolean }>`
+  ${({ vertical }) =>
+    vertical
+      ? `display: grid;
+    grid-row-gap: .25rem;`
+      : `display: grid;
+    grid-template-columns: 1.25fr 4fr;
+    grid-column-gap: 1rem;
+    place-items: center;`}
 
   .selection-title {
     justify-self: flex-start;
   }
+`;
+
+const StyledButton = styled(Button)`
+  margin-top: 0.5rem;
+  height: 3.5rem;
 `;
