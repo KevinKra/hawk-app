@@ -11,3 +11,6 @@ build
 # npm
 node_modules/
 yarn.lock
+
+# other
+.vscode
