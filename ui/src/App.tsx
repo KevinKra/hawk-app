@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import axios from "axios";
+import { Typography } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
 import "./App.css";
+import styled from "@emotion/styled";
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -17,9 +20,21 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <h1>hello world</h1>
+      <CssBaseline />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      />
+      <StyledBox>
+        <Typography variant="body1">Hello World?</Typography>
+      </StyledBox>
     </div>
   );
 };
 
 export default App;
+
+const StyledBox = styled("div")<{ primary?: boolean }>`
+  border: 1px solid red;
+  color: ${({ primary }) => (primary ? "red" : "blue")};
+`;
