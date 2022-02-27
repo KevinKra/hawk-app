@@ -4,6 +4,7 @@ import "./App.css";
 import UploadForm from "./components/UploadForm/UploadForm";
 import { $axios } from "./utils/axios";
 import SelectionGrid from "./components/SelectionGrid/SelectionGrid";
+import { HawkProvider } from "./context";
 
 const App: React.FC = () => {
   return (
@@ -21,8 +22,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-// const StyledBox = styled("div")<{ primary?: boolean }>`
-//   border: 1px solid red;
-//   color: ${({ primary }) => (primary ? "red" : "blue")};
-// `;

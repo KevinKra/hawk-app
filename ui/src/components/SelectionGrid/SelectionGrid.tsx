@@ -1,28 +1,17 @@
 import { Button, Paper, styled, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { $axios } from "../../utils/axios";
-import { HawkData } from "../UploadForm/UploadForm";
+import React from "react";
+import { useGetHawkContext } from "../../context";
+
+// todo - set current selection viewable from both components
+// todo - validate inputs
+// todo - configure sortable grid + buttons
+// todo - configure hawk update
+// todo - configure hawk delete
+// todo - adjust casing methods for column data
+// todo - resolve build/dev cors error
 
 const SelectionGrid = () => {
-  const [currentHawks, setCurrentHawks] = useState<HawkData[]>([]);
-
-  useEffect(() => {
-    const checkAPI = async () => {
-      try {
-        const response = await $axios.get(
-          "http://localhost:8000/api/hawk/list"
-        );
-        // const response = await fetch("http://localhost:8000/api/hawk/list", {
-        //   mode: "no-cors",
-        // });
-        setCurrentHawks(response.data.hawks);
-        console.log({ response });
-      } catch (error) {
-        console.log({ error });
-      }
-    };
-    checkAPI();
-  }, []);
+  const hawks = useGetHawkContext();
 
   return (
     <StyledWrapper>
@@ -32,13 +21,13 @@ const SelectionGrid = () => {
           <Typography>Size</Typography>
           <Typography>Gender</Typography>
         </GridHeader>
-        {currentHawks.map(({ name, size, gender }) => {
+        {hawks.state.allHawks.map(({ id, name, size, gender }) => {
           return (
-            <GridRow>
+            <GridRow key={id}>
               <Typography>{name.toLowerCase()}</Typography>
               <Typography>{size.toLowerCase()}</Typography>
               <Typography>{gender.toLowerCase()}</Typography>
-              <Button>View</Button>
+              <Button onClick={() => hawks.selectHawk(id)}>View</Button>
             </GridRow>
           );
         })}

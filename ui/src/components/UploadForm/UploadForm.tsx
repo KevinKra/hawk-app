@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
-import { $axios } from "../../utils/axios";
+import { useGetHawkContext } from "../../context";
 import { StyledWrapper } from "../SelectionGrid/SelectionGrid";
 
 interface IHawkFormData {
@@ -30,6 +30,7 @@ interface IHawkFormData {
 }
 
 export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
+  id?: string;
   lengthBegin: number;
   lengthEnd: number;
   wingspanBegin: number;
@@ -39,6 +40,10 @@ export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
 };
 
 const UploadForm = () => {
+  const hawks = useGetHawkContext();
+
+  console.log("h", hawks.state.currentHawk);
+
   const [formData, setFormData] = useState<IHawkFormData>({
     name: "",
     size: "SMALL",
