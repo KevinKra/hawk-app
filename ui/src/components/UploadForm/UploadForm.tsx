@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import React, { useState } from "react";
 import { $axios } from "../../utils/axios";
+import { StyledWrapper } from "../SelectionGrid/SelectionGrid";
 
 interface IHawkFormData {
   name: string;
@@ -110,187 +111,185 @@ const UploadForm = () => {
   // ? although I destructured the formData object above; I have a personal preference for using attributes
   // ? for more readability when possible (like below).
   return (
-    <StyledPaper elevation={3}>
-      <SelectionWrapper>
-        <Typography className="selection-title" fontWeight={500}>
-          Name
-        </Typography>
-        <TextField
-          fullWidth
-          id="name"
-          label="Name*"
-          placeholder="Osprey"
-          variant="outlined"
-          name="name"
-          value={formData.name}
-          onChange={handleInputChange}
-        />
-      </SelectionWrapper>
-      <SelectionWrapper>
-        <Typography className="selection-title" fontWeight={500}>
-          Size
-        </Typography>
-        <FormControl fullWidth>
-          <InputLabel id="hawk-size-label">Size</InputLabel>
-          <Select
-            labelId="hawk-size-label"
-            id="hawk-size"
-            value={formData.size}
-            label="Size"
-            name="size"
+    <StyledWrapper elevation={3}>
+      <FormContents>
+        <SelectionWrapper>
+          <Typography className="selection-title" fontWeight={500}>
+            Name
+          </Typography>
+          <TextField
+            fullWidth
+            id="name"
+            label="Name*"
+            placeholder="Osprey"
+            variant="outlined"
+            name="name"
+            value={formData.name}
             onChange={handleInputChange}
-          >
-            <MenuItem value={"SMALL"}>Small</MenuItem>
-            <MenuItem value={"MEDIUM"}>Medium</MenuItem>
-            <MenuItem value={"LARGE"}>Large</MenuItem>
-          </Select>
-        </FormControl>
-      </SelectionWrapper>
-      <SelectionWrapper>
-        <Typography className="selection-title" fontWeight={500}>
-          Gender
-        </Typography>
-        <FormControl fullWidth>
-          <InputLabel id="hawk-gender-label">Gender</InputLabel>
-          <Select
-            labelId="hawk-gender-label"
-            id="hawk-gender"
-            value={formData.gender}
-            label="Gender"
-            name="gender"
+          />
+        </SelectionWrapper>
+        <SelectionWrapper>
+          <Typography className="selection-title" fontWeight={500}>
+            Size
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="hawk-size-label">Size</InputLabel>
+            <Select
+              labelId="hawk-size-label"
+              id="hawk-size"
+              value={formData.size}
+              label="Size"
+              name="size"
+              onChange={handleInputChange}
+            >
+              <MenuItem value={"SMALL"}>Small</MenuItem>
+              <MenuItem value={"MEDIUM"}>Medium</MenuItem>
+              <MenuItem value={"LARGE"}>Large</MenuItem>
+            </Select>
+          </FormControl>
+        </SelectionWrapper>
+        <SelectionWrapper>
+          <Typography className="selection-title" fontWeight={500}>
+            Gender
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="hawk-gender-label">Gender</InputLabel>
+            <Select
+              labelId="hawk-gender-label"
+              id="hawk-gender"
+              value={formData.gender}
+              label="Gender"
+              name="gender"
+              onChange={handleInputChange}
+            >
+              <MenuItem value={"MALE"}>Male</MenuItem>
+              <MenuItem value={"FEMALE"}>Female</MenuItem>
+            </Select>
+          </FormControl>
+        </SelectionWrapper>
+        <StyledDivider />
+        <SelectionWrapper>
+          <div className="selection-title">
+            <Typography fontWeight={500}>{`Length`}</Typography>
+            <Typography variant="overline">{`${formData.length[0]} - ${formData.length[1]} cm`}</Typography>
+          </div>
+          <Slider
+            size="small"
+            getAriaLabel={() => "length"}
+            name="length"
+            value={formData.length}
             onChange={handleInputChange}
-          >
-            <MenuItem value={"MALE"}>Male</MenuItem>
-            <MenuItem value={"FEMALE"}>Female</MenuItem>
-          </Select>
-        </FormControl>
-      </SelectionWrapper>
-      <StyledDivider />
-      <SelectionWrapper>
-        <div className="selection-title">
-          <Typography fontWeight={500}>{`Length`}</Typography>
-          <Typography variant="overline">{`${formData.length[0]} - ${formData.length[1]} cm`}</Typography>
-        </div>
-        <Slider
-          size="small"
-          getAriaLabel={() => "length"}
-          name="length"
-          value={formData.length}
-          onChange={handleInputChange}
-          valueLabelDisplay="auto"
-          min={5}
-          max={125}
-        />
-      </SelectionWrapper>
-      <SelectionWrapper>
-        <div className="selection-title">
-          <Typography fontWeight={500}>{`Wingspan`}</Typography>
-          <Typography variant="overline">{`${formData.wingspan[0]} - ${formData.wingspan[1]} cm`}</Typography>
-        </div>
-        <Slider
-          size="small"
-          getAriaLabel={() => "wingspan"}
-          name="wingspan"
-          value={formData.wingspan}
-          onChange={handleInputChange}
-          valueLabelDisplay="auto"
-          min={5}
-          max={125}
-        />
-      </SelectionWrapper>
-      <SelectionWrapper>
-        <div className="selection-title">
-          <Typography fontWeight={500}>{`Weight`}</Typography>
-          <Typography variant="overline">{`${formData.weight[0]} - ${formData.weight[1]} grams`}</Typography>
-        </div>
-        <Slider
-          size="small"
-          getAriaLabel={() => "weight"}
-          name="weight"
-          value={formData.weight}
-          onChange={handleInputChange}
-          valueLabelDisplay="auto"
-          min={5}
-          max={250}
-        />
-      </SelectionWrapper>
-      <StyledDivider />
-      <SelectionWrapper>
-        <Typography className="selection-title" fontWeight={500}>
-          Image
-        </Typography>
-        <TextField
-          fullWidth
-          id="name"
-          label="Image*"
-          name="pictureUrl"
-          value={formData.pictureUrl}
-          placeholder="link to image"
-          onChange={handleInputChange}
-          variant="outlined"
-        />
-      </SelectionWrapper>
-      <SelectionWrapper vertical>
-        <Typography className="selection-title" fontWeight={500}>
-          Color
-        </Typography>
-        <TextField
-          fullWidth
-          label="Describe the hawk's color."
-          multiline
-          rows={3}
-          name="colorDescription"
-          value={formData.colorDescription}
-          onChange={handleInputChange}
-          variant="filled"
-        />
-      </SelectionWrapper>
-      <SelectionWrapper vertical>
-        <Typography className="selection-title" fontWeight={500}>
-          Behavior
-        </Typography>
-        <TextField
-          fullWidth
-          label="Describe the hawk's behavior."
-          multiline
-          rows={3}
-          name="behaviorDescription"
-          value={formData.behaviorDescription}
-          onChange={handleInputChange}
-          variant="filled"
-        />
-      </SelectionWrapper>
-      <SelectionWrapper vertical>
-        <Typography className="selection-title" fontWeight={500}>
-          Habitat
-        </Typography>
-        <TextField
-          fullWidth
-          label="Describe the hawk's habitat."
-          multiline
-          rows={3}
-          name="habitatDescription"
-          value={formData.habitatDescription}
-          onChange={handleInputChange}
-          variant="filled"
-        />
-      </SelectionWrapper>
-      <StyledButton onClick={handleUpload} variant="contained">
-        Save
-      </StyledButton>
-    </StyledPaper>
+            valueLabelDisplay="auto"
+            min={5}
+            max={125}
+          />
+        </SelectionWrapper>
+        <SelectionWrapper>
+          <div className="selection-title">
+            <Typography fontWeight={500}>{`Wingspan`}</Typography>
+            <Typography variant="overline">{`${formData.wingspan[0]} - ${formData.wingspan[1]} cm`}</Typography>
+          </div>
+          <Slider
+            size="small"
+            getAriaLabel={() => "wingspan"}
+            name="wingspan"
+            value={formData.wingspan}
+            onChange={handleInputChange}
+            valueLabelDisplay="auto"
+            min={5}
+            max={125}
+          />
+        </SelectionWrapper>
+        <SelectionWrapper>
+          <div className="selection-title">
+            <Typography fontWeight={500}>{`Weight`}</Typography>
+            <Typography variant="overline">{`${formData.weight[0]} - ${formData.weight[1]} grams`}</Typography>
+          </div>
+          <Slider
+            size="small"
+            getAriaLabel={() => "weight"}
+            name="weight"
+            value={formData.weight}
+            onChange={handleInputChange}
+            valueLabelDisplay="auto"
+            min={5}
+            max={250}
+          />
+        </SelectionWrapper>
+        <StyledDivider />
+        <SelectionWrapper>
+          <Typography className="selection-title" fontWeight={500}>
+            Image
+          </Typography>
+          <TextField
+            fullWidth
+            id="name"
+            label="Image*"
+            name="pictureUrl"
+            value={formData.pictureUrl}
+            placeholder="link to image"
+            onChange={handleInputChange}
+            variant="outlined"
+          />
+        </SelectionWrapper>
+        <SelectionWrapper vertical>
+          <Typography className="selection-title" fontWeight={500}>
+            Color
+          </Typography>
+          <TextField
+            fullWidth
+            label="Describe the hawk's color."
+            multiline
+            rows={3}
+            name="colorDescription"
+            value={formData.colorDescription}
+            onChange={handleInputChange}
+            variant="filled"
+          />
+        </SelectionWrapper>
+        <SelectionWrapper vertical>
+          <Typography className="selection-title" fontWeight={500}>
+            Behavior
+          </Typography>
+          <TextField
+            fullWidth
+            label="Describe the hawk's behavior."
+            multiline
+            rows={3}
+            name="behaviorDescription"
+            value={formData.behaviorDescription}
+            onChange={handleInputChange}
+            variant="filled"
+          />
+        </SelectionWrapper>
+        <SelectionWrapper vertical>
+          <Typography className="selection-title" fontWeight={500}>
+            Habitat
+          </Typography>
+          <TextField
+            fullWidth
+            label="Describe the hawk's habitat."
+            multiline
+            rows={3}
+            name="habitatDescription"
+            value={formData.habitatDescription}
+            onChange={handleInputChange}
+            variant="filled"
+          />
+        </SelectionWrapper>
+        <StyledButton onClick={handleUpload} variant="contained">
+          Save
+        </StyledButton>
+      </FormContents>
+    </StyledWrapper>
   );
 };
 
 export default UploadForm;
 
-export const StyledPaper = styled(Paper)`
+export const FormContents = styled("div")`
   display: grid;
   grid-gap: 1rem;
-  padding: 1rem;
-  margin: 1rem;
-  width: 550px;
-  border: 1px solid #ddd;
 `;
 
 const StyledDivider = styled(Divider)`
