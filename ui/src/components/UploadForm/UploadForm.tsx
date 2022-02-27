@@ -17,9 +17,9 @@ interface IUploadForm {
   name: string;
   size: "small" | "medium" | "large";
   gender: "male" | "female";
-  length: number;
-  wingspan: number;
-  weight: number;
+  length: number[];
+  wingspan: number[];
+  weight: number[];
   image: string;
   color: string;
   behavior: string;
@@ -31,9 +31,9 @@ const UploadForm = () => {
     name: "",
     size: "small",
     gender: "male",
-    length: 0,
-    wingspan: 0,
-    weight: 0,
+    length: [0, 25],
+    wingspan: [0, 25],
+    weight: [0, 25],
     image: "",
     color: "",
     behavior: "",
@@ -43,13 +43,18 @@ const UploadForm = () => {
   const handleInputChange = (e: any) => {
     const target = e.target.name;
     const value = e.target.value;
+    console.log(value);
     setFormData({ ...formData, [target]: value });
   };
+
+  const handleUpload = () => {};
 
   return (
     <StyledPaper elevation={3}>
       <SelectionWrapper>
-        <Typography className="selection-title">Name</Typography>
+        <Typography className="selection-title" fontWeight={500}>
+          Name
+        </Typography>
         <TextField
           fullWidth
           id="name"
@@ -62,7 +67,9 @@ const UploadForm = () => {
         />
       </SelectionWrapper>
       <SelectionWrapper>
-        <Typography className="selection-title">Size</Typography>
+        <Typography className="selection-title" fontWeight={500}>
+          Size
+        </Typography>
         <FormControl fullWidth>
           <InputLabel id="hawk-size-label">Size</InputLabel>
           <Select
@@ -80,7 +87,9 @@ const UploadForm = () => {
         </FormControl>
       </SelectionWrapper>
       <SelectionWrapper>
-        <Typography className="selection-title">Gender</Typography>
+        <Typography className="selection-title" fontWeight={500}>
+          Gender
+        </Typography>
         <FormControl fullWidth>
           <InputLabel id="hawk-gender-label">Gender</InputLabel>
           <Select
@@ -98,7 +107,10 @@ const UploadForm = () => {
       </SelectionWrapper>
       <StyledDivider />
       <SelectionWrapper>
-        <Typography className="selection-title">{`Length (${formData.length}cm)`}</Typography>
+        <div className="selection-title">
+          <Typography fontWeight={500}>{`Length`}</Typography>
+          <Typography variant="overline">{`${formData.length[0]} - ${formData.length[1]} cm`}</Typography>
+        </div>
         <Slider
           size="small"
           aria-label="length"
@@ -111,7 +123,10 @@ const UploadForm = () => {
         />
       </SelectionWrapper>
       <SelectionWrapper>
-        <Typography className="selection-title">{`Wingspan (${formData.wingspan}cm)`}</Typography>
+        <div className="selection-title">
+          <Typography fontWeight={500}>{`Wingspan`}</Typography>
+          <Typography variant="overline">{`${formData.wingspan[0]} - ${formData.wingspan[1]} cm`}</Typography>
+        </div>
         <Slider
           size="small"
           aria-label="wingspan"
@@ -124,7 +139,10 @@ const UploadForm = () => {
         />
       </SelectionWrapper>
       <SelectionWrapper>
-        <Typography className="selection-title">{`Weight (${formData.weight}g)`}</Typography>
+        <div className="selection-title">
+          <Typography fontWeight={500}>{`Weight`}</Typography>
+          <Typography variant="overline">{`${formData.weight[0]} - ${formData.weight[1]} grams`}</Typography>
+        </div>
         <Slider
           size="small"
           aria-label="weight"
@@ -138,7 +156,9 @@ const UploadForm = () => {
       </SelectionWrapper>
       <StyledDivider />
       <SelectionWrapper>
-        <Typography className="selection-title">Image</Typography>
+        <Typography className="selection-title" fontWeight={500}>
+          Image
+        </Typography>
         <TextField
           fullWidth
           id="name"
@@ -151,7 +171,9 @@ const UploadForm = () => {
         />
       </SelectionWrapper>
       <SelectionWrapper vertical>
-        <Typography className="selection-title">Color</Typography>
+        <Typography className="selection-title" fontWeight={500}>
+          Color
+        </Typography>
         <TextField
           fullWidth
           label="Describe the hawk's color."
@@ -164,7 +186,9 @@ const UploadForm = () => {
         />
       </SelectionWrapper>
       <SelectionWrapper vertical>
-        <Typography className="selection-title">Behavior</Typography>
+        <Typography className="selection-title" fontWeight={500}>
+          Behavior
+        </Typography>
         <TextField
           fullWidth
           label="Describe the hawk's behavior."
@@ -177,7 +201,9 @@ const UploadForm = () => {
         />
       </SelectionWrapper>
       <SelectionWrapper vertical>
-        <Typography className="selection-title">Habitat</Typography>
+        <Typography className="selection-title" fontWeight={500}>
+          Habitat
+        </Typography>
         <TextField
           fullWidth
           label="Describe the hawk's habitat."
