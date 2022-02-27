@@ -11,33 +11,34 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import axios from "axios";
 import React, { useState } from "react";
 
 interface IUploadForm {
   name: string;
-  size: "small" | "medium" | "large";
-  gender: "male" | "female";
+  size: "SMALL" | "MEDIUM" | "LARGE";
+  gender: "MALE" | "FEMALE";
   length: number[];
   wingspan: number[];
   weight: number[];
-  image: string;
-  color: string;
-  behavior: string;
-  habitat: string;
+  pictureUrl: string;
+  colorDescription: string;
+  behaviorDescription: string;
+  habitatDescription: string;
 }
 
 const UploadForm = () => {
   const [formData, setFormData] = useState<IUploadForm>({
     name: "",
-    size: "small",
-    gender: "male",
+    size: "SMALL",
+    gender: "MALE",
     length: [0, 25],
     wingspan: [0, 25],
     weight: [0, 25],
-    image: "",
-    color: "",
-    behavior: "",
-    habitat: "",
+    pictureUrl: "",
+    colorDescription: "",
+    behaviorDescription: "",
+    habitatDescription: "",
   });
 
   const handleInputChange = (e: any) => {
@@ -47,8 +48,42 @@ const UploadForm = () => {
     setFormData({ ...formData, [target]: value });
   };
 
-  const handleUpload = () => {};
+  const {
+    name,
+    size,
+    gender,
+    pictureUrl,
+    colorDescription,
+    behaviorDescription,
+    habitatDescription,
+  } = formData;
 
+  const cleanedFormData = {
+    name,
+    size,
+    gender,
+    pictureUrl,
+    colorDescription,
+    behaviorDescription,
+    habitatDescription,
+    lengthBegin: formData.length[0],
+    lengthEnd: formData.length[1],
+    wingspanBegin: formData.wingspan[0],
+    wingspanEnd: formData.wingspan[1],
+    weightBegin: formData.weight[0],
+    weightEnd: formData.weight[1],
+  };
+
+  const handleUpload = async () => {
+    try {
+      await axios.post("http://localhost:8000/api/hawk", cleanedFormData);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  // ? although I destructured the formData object above; I have a personal preference for using attributes
+  // ? for more readability when possible (like below).
   return (
     <StyledPaper elevation={3}>
       <SelectionWrapper>
@@ -80,9 +115,9 @@ const UploadForm = () => {
             name="size"
             onChange={handleInputChange}
           >
-            <MenuItem value={"small"}>Small</MenuItem>
-            <MenuItem value={"medium"}>Medium</MenuItem>
-            <MenuItem value={"large"}>Large</MenuItem>
+            <MenuItem value={"SMALL"}>Small</MenuItem>
+            <MenuItem value={"MEDIUM"}>Medium</MenuItem>
+            <MenuItem value={"LARGE"}>Large</MenuItem>
           </Select>
         </FormControl>
       </SelectionWrapper>
@@ -100,8 +135,8 @@ const UploadForm = () => {
             name="gender"
             onChange={handleInputChange}
           >
-            <MenuItem value={"male"}>Male</MenuItem>
-            <MenuItem value={"female"}>Female</MenuItem>
+            <MenuItem value={"MALE"}>Male</MenuItem>
+            <MenuItem value={"FEMALE"}>Female</MenuItem>
           </Select>
         </FormControl>
       </SelectionWrapper>
@@ -163,8 +198,8 @@ const UploadForm = () => {
           fullWidth
           id="name"
           label="Image*"
-          name="image"
-          value={formData.image}
+          name="pictureUrl"
+          value={formData.pictureUrl}
           placeholder="link to image"
           onChange={handleInputChange}
           variant="outlined"
@@ -179,8 +214,8 @@ const UploadForm = () => {
           label="Describe the hawk's color."
           multiline
           rows={3}
-          name="color"
-          value={formData.color}
+          name="colorDescription"
+          value={formData.colorDescription}
           onChange={handleInputChange}
           variant="filled"
         />
@@ -194,8 +229,8 @@ const UploadForm = () => {
           label="Describe the hawk's behavior."
           multiline
           rows={3}
-          name="behavior"
-          value={formData.behavior}
+          name="behaviorDescription"
+          value={formData.behaviorDescription}
           onChange={handleInputChange}
           variant="filled"
         />
@@ -209,13 +244,15 @@ const UploadForm = () => {
           label="Describe the hawk's habitat."
           multiline
           rows={3}
-          name="habitat"
-          value={formData.habitat}
+          name="habitatDescription"
+          value={formData.habitatDescription}
           onChange={handleInputChange}
           variant="filled"
         />
       </SelectionWrapper>
-      <StyledButton variant="contained">Save</StyledButton>
+      <StyledButton onClick={handleUpload} variant="contained">
+        Save
+      </StyledButton>
     </StyledPaper>
   );
 };
