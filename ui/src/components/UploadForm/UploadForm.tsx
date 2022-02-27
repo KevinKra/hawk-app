@@ -44,7 +44,6 @@ const UploadForm = () => {
   const handleInputChange = (e: any) => {
     const target = e.target.name;
     const value = e.target.value;
-    console.log(value);
     setFormData({ ...formData, [target]: value });
   };
 
@@ -148,7 +147,7 @@ const UploadForm = () => {
         </div>
         <Slider
           size="small"
-          aria-label="length"
+          getAriaLabel={() => "length"}
           name="length"
           value={formData.length}
           onChange={handleInputChange}
@@ -164,7 +163,7 @@ const UploadForm = () => {
         </div>
         <Slider
           size="small"
-          aria-label="wingspan"
+          getAriaLabel={() => "wingspan"}
           name="wingspan"
           value={formData.wingspan}
           onChange={handleInputChange}
@@ -180,7 +179,7 @@ const UploadForm = () => {
         </div>
         <Slider
           size="small"
-          aria-label="weight"
+          getAriaLabel={() => "weight"}
           name="weight"
           value={formData.weight}
           onChange={handleInputChange}
