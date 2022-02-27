@@ -15,7 +15,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { $axios } from "../../utils/axios";
 
-interface IUploadForm {
+interface IHawkFormData {
   name: string;
   size: "SMALL" | "MEDIUM" | "LARGE";
   gender: "MALE" | "FEMALE";
@@ -28,8 +28,17 @@ interface IUploadForm {
   habitatDescription: string;
 }
 
+export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
+  lengthBegin: number;
+  lengthEnd: number;
+  wingspanBegin: number;
+  wingspanEnd: number;
+  weightEnd: number;
+  weightBegin: number;
+};
+
 const UploadForm = () => {
-  const [formData, setFormData] = useState<IUploadForm>({
+  const [formData, setFormData] = useState<IHawkFormData>({
     name: "",
     size: "SMALL",
     gender: "MALE",
@@ -58,7 +67,7 @@ const UploadForm = () => {
     habitatDescription,
   } = formData;
 
-  const cleanedFormData = {
+  const cleanedFormData: HawkData = {
     name,
     size,
     gender,
@@ -275,7 +284,7 @@ const UploadForm = () => {
 
 export default UploadForm;
 
-const StyledPaper = styled(Paper)`
+export const StyledPaper = styled(Paper)`
   display: grid;
   grid-gap: 1rem;
   padding: 1rem;

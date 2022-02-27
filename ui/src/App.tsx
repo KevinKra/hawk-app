@@ -3,25 +3,9 @@ import CssBaseline from "@mui/material/CssBaseline";
 import "./App.css";
 import UploadForm from "./components/UploadForm/UploadForm";
 import { $axios } from "./utils/axios";
+import SelectionGrid from "./components/SelectionGrid/SelectionGrid";
 
 const App: React.FC = () => {
-  useEffect(() => {
-    const checkAPI = async () => {
-      try {
-        // const response = await $axios.get(
-        //   "http://localhost:8000/api/hawk/list"
-        // );
-        const response = await fetch("http://localhost:8000/api/hawk/list", {
-          mode: "no-cors",
-        });
-        console.log({ response });
-      } catch (error) {
-        console.log({ error });
-      }
-    };
-    checkAPI();
-  }, []);
-
   return (
     <div className="App">
       <CssBaseline />
@@ -29,9 +13,9 @@ const App: React.FC = () => {
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
       />
-      {/* <StyledBox> */}
+
+      <SelectionGrid />
       <UploadForm />
-      {/* </StyledBox> */}
     </div>
   );
 };
