@@ -1,16 +1,19 @@
 import React, { useEffect } from "react";
-import axios from "axios";
-import { Typography } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import "./App.css";
-import styled from "@emotion/styled";
 import UploadForm from "./components/UploadForm/UploadForm";
+import { $axios } from "./utils/axios";
 
 const App: React.FC = () => {
   useEffect(() => {
     const checkAPI = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/hawk/list");
+        // const response = await $axios.get(
+        //   "http://localhost:8000/api/hawk/list"
+        // );
+        const response = await fetch("http://localhost:8000/api/hawk/list", {
+          mode: "no-cors",
+        });
         console.log({ response });
       } catch (error) {
         console.log({ error });

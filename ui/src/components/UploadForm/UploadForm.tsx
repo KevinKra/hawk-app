@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
+import { $axios } from "../../utils/axios";
 
 interface IUploadForm {
   name: string;
@@ -73,9 +74,25 @@ const UploadForm = () => {
     weightEnd: formData.weight[1],
   };
 
+  // todo - choose a working solution, at least let it work on dev.
   const handleUpload = async () => {
     try {
-      await axios.post("http://localhost:8000/api/hawk", cleanedFormData);
+      //   const response = await $axios.post("/api/hawk", cleanedFormData);
+      //   //   const response = await axios.post(
+      //   //     "http://localhost:8000/api/hawk",
+      //   //     cleanedFormData
+      //   //   );
+      const response = await fetch("http://localhost:8000/api/hawk", {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain",
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+        // mode: "no-cors", // todo - cannot no-cors on post?
+        body: JSON.stringify(cleanedFormData),
+      });
+
+      console.log({ response });
     } catch (error) {
       console.log({ error });
     }
