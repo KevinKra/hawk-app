@@ -38,29 +38,28 @@ export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
   weightBegin: number;
 };
 
+const defaultFormState: IHawkFormData = {
+  name: "",
+  size: "SMALL",
+  gender: "MALE",
+  length: [0, 25],
+  wingspan: [0, 25],
+  weight: [0, 25],
+  pictureUrl: "",
+  colorDescription: "",
+  behaviorDescription: "",
+  habitatDescription: "",
+};
+
 const UploadForm = () => {
   const [updateMode, setUpdateMode] = useState(false);
   const [formError, setFormError] = useState(false);
+  const [formData, setFormData] = useState<IHawkFormData>(defaultFormState);
   const {
     state: { currentHawk: currSelectedHawk },
     resetHawk,
     incrementCounter,
   } = useGetHawkContext();
-
-  const defaultFormState: IHawkFormData = {
-    name: "",
-    size: "SMALL",
-    gender: "MALE",
-    length: [0, 25],
-    wingspan: [0, 25],
-    weight: [0, 25],
-    pictureUrl: "",
-    colorDescription: "",
-    behaviorDescription: "",
-    habitatDescription: "",
-  };
-
-  const [formData, setFormData] = useState<IHawkFormData>(defaultFormState);
 
   useEffect(() => {
     if (currSelectedHawk) {
@@ -130,10 +129,10 @@ const UploadForm = () => {
   };
 
   const checkForMissingInputs = () => {
+    // ? func handles _only_ input checking behavior
     const formValues = Object.values(formData);
-    // ? search for any empty strings (no input)
-    const missingInputs = formValues.some((value) => value === "");
-    if (missingInputs) {
+    const foundEmptyInputs = formValues.some((value) => value === "");
+    if (foundEmptyInputs) {
       setFormError(true);
       return true;
     }
@@ -142,7 +141,7 @@ const UploadForm = () => {
   };
 
   // * form handlers
-  const handleUpload = async () => {
+  const handlePost = async () => {
     const foundMissingInputs = checkForMissingInputs();
     if (foundMissingInputs === false) {
       await fetchHandler(
@@ -179,7 +178,8 @@ const UploadForm = () => {
     setUpdateMode(false);
   };
 
-  // ? although I destructured the formData object above; I have a personal preference for using attributes
+  // ? although I destructured the formData object above;
+  // ? I have a personal preference for using dot notation
   // ? for more readability when possible (like below).
   return (
     <StyledWrapper elevation={3}>
@@ -198,7 +198,7 @@ const UploadForm = () => {
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            error={formError && !Boolean(formData.name)}
+            error={formError && !formData.name}
           />
         </SelectionWrapper>
         <SelectionWrapper>
@@ -214,7 +214,7 @@ const UploadForm = () => {
               label="Size"
               name="size"
               onChange={handleInputChange}
-              error={formError && !Boolean(formData.size)}
+              error={formError && !formData.size}
             >
               <MenuItem value={"SMALL"}>Small</MenuItem>
               <MenuItem value={"MEDIUM"}>Medium</MenuItem>
@@ -235,7 +235,7 @@ const UploadForm = () => {
               label="Gender"
               name="gender"
               onChange={handleInputChange}
-              error={formError && !Boolean(formData.gender)}
+              error={formError && !formData.gender}
             >
               <MenuItem value={"MALE"}>Male</MenuItem>
               <MenuItem value={"FEMALE"}>Female</MenuItem>
@@ -305,7 +305,7 @@ const UploadForm = () => {
             placeholder="link to image"
             onChange={handleInputChange}
             variant="outlined"
-            error={formError && !Boolean(formData.pictureUrl)}
+            error={formError && !formData.pictureUrl}
           />
         </SelectionWrapper>
         <SelectionWrapper vertical>
@@ -321,7 +321,7 @@ const UploadForm = () => {
             value={formData.colorDescription}
             onChange={handleInputChange}
             variant="filled"
-            error={formError && !Boolean(formData.colorDescription)}
+            error={formError && !formData.colorDescription}
           />
         </SelectionWrapper>
         <SelectionWrapper vertical>
@@ -337,7 +337,7 @@ const UploadForm = () => {
             value={formData.behaviorDescription}
             onChange={handleInputChange}
             variant="filled"
-            error={formError && !Boolean(formData.behaviorDescription)}
+            error={formError && !formData.behaviorDescription}
           />
         </SelectionWrapper>
         <SelectionWrapper vertical>
@@ -353,7 +353,7 @@ const UploadForm = () => {
             value={formData.habitatDescription}
             onChange={handleInputChange}
             variant="filled"
-            error={formError && !Boolean(formData.habitatDescription)}
+            error={formError && !formData.habitatDescription}
           />
         </SelectionWrapper>
         {updateMode ? (
@@ -374,7 +374,7 @@ const UploadForm = () => {
             </StyledButton>
           </ButtonBar>
         ) : (
-          <StyledButton onClick={handleUpload} variant="contained">
+          <StyledButton onClick={handlePost} variant="contained">
             Save
           </StyledButton>
         )}

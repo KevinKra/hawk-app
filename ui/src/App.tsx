@@ -1,15 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import "./App.css";
 import UploadForm from "./components/UploadForm/UploadForm";
-import { $axios } from "./utils/axios";
 import SelectionGrid from "./components/SelectionGrid/SelectionGrid";
-import { HawkProvider } from "./context";
 import styled from "@emotion/styled";
 
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div>
       <CssBaseline />
       <link
         rel="stylesheet"

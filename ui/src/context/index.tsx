@@ -20,6 +20,7 @@ function HawkProvider({ children }: any) {
   useEffect(() => {
     const GetHawks = async () => {
       try {
+        // ? troubleshoot solution attempt
         // const response = await fetch("http://localhost:8000/api/hawk/list", {
         //   method: "GET",
         //   headers: {
