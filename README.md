@@ -1,8 +1,8 @@
 # Hawk Reference App
 
-## NEW:
+## Build and start ui steps:
 
-To build and run the app locally (**after docker api setup below has been completed**) follow these steps:
+To build and run the app locally **(after docker api setup steps below have been completed)** ...
 - `cd` into the `/ui` directory (`cd ui`)
 - run `npm run build && npm run start:serve`, this will build and launch the ui.
 - visit `http://localhost:3000/`
