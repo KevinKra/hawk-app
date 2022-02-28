@@ -50,10 +50,10 @@ const GridWrapper = styled("div")`
   display: grid;
   grid-template-rows: auto;
 
-  div:nth-child(odd) {
+  div:nth-of-type(odd) {
     background-color: #ddd;
   }
-  div:nth-child(0) {
+  div:nth-of-type(0) {
     background-color: none;
   }
 `;

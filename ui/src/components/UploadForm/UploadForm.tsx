@@ -40,6 +40,7 @@ export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
 };
 
 const UploadForm = () => {
+  const [updateHawk, setUpdateHawk] = useState(false);
   const hawks = useGetHawkContext();
   console.log(hawks.state.currentHawk);
 
@@ -67,6 +68,7 @@ const UploadForm = () => {
         behaviorDescription,
         habitatDescription,
       } = hawks.state.currentHawk;
+      setUpdateHawk(true);
       setFormData({
         name,
         size,
@@ -126,11 +128,6 @@ const UploadForm = () => {
   // todo - choose a working solution, at least let it work on dev.
   const handleUpload = async () => {
     try {
-      //   const response = await $axios.post("/api/hawk", cleanedFormData);
-      //   //   const response = await axios.post(
-      //   //     "http://localhost:8000/api/hawk",
-      //   //     cleanedFormData
-      //   //   );
       const response = await fetch("http://localhost:8000/api/hawk", {
         method: "POST",
         headers: {
@@ -142,6 +139,40 @@ const UploadForm = () => {
       });
 
       console.log({ response });
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const handleUpdate = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/hawk/${id}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json, text/plain",
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+        // mode: "no-cors", // todo - cannot no-cors on post?
+        body: JSON.stringify(cleanedFormData),
+      });
+      console.log({ response });
+      setUpdateHawk(false);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/hawk/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json, text/plain",
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+      });
+      console.log({ response });
+      setUpdateHawk(false);
     } catch (error) {
       console.log({ error });
     }
@@ -316,9 +347,32 @@ const UploadForm = () => {
             variant="filled"
           />
         </SelectionWrapper>
-        <StyledButton onClick={handleUpload} variant="contained">
-          Save
-        </StyledButton>
+        {updateHawk ? (
+          <ButtonBar>
+            <StyledButton
+              onClick={() =>
+                handleDelete(hawks.state.currentHawk?.id as string)
+              }
+              color="primary"
+              variant="outlined"
+            >
+              Delete
+            </StyledButton>
+            <StyledButton
+              onClick={() =>
+                handleUpdate(hawks.state.currentHawk?.id as string)
+              }
+              color="primary"
+              variant="contained"
+            >
+              Update
+            </StyledButton>
+          </ButtonBar>
+        ) : (
+          <StyledButton onClick={handleUpload} variant="contained">
+            Save
+          </StyledButton>
+        )}
       </FormContents>
     </StyledWrapper>
   );
@@ -348,6 +402,12 @@ const SelectionWrapper = styled("form")<{ vertical?: boolean }>`
   .selection-title {
     justify-self: flex-start;
   }
+`;
+
+const ButtonBar = styled("div")`
+  display: grid;
+  grid-template-columns: 1.25fr 3fr;
+  grid-column-gap: 1rem;
 `;
 
 const StyledButton = styled(Button)`
