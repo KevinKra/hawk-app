@@ -12,31 +12,9 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useGetHawkContext } from "../../context";
+import { IHawkFormData, HawkData } from "../../types";
 import { fetchHandler } from "../../utils";
 import { StyledWrapper } from "../SelectionGrid/SelectionGrid";
-
-interface IHawkFormData {
-  name: string;
-  size: "SMALL" | "MEDIUM" | "LARGE";
-  gender: "MALE" | "FEMALE";
-  length: number[];
-  wingspan: number[];
-  weight: number[];
-  pictureUrl: string;
-  colorDescription: string;
-  behaviorDescription: string;
-  habitatDescription: string;
-}
-
-export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
-  id?: string;
-  lengthBegin: number;
-  lengthEnd: number;
-  wingspanBegin: number;
-  wingspanEnd: number;
-  weightEnd: number;
-  weightBegin: number;
-};
 
 const defaultFormState: IHawkFormData = {
   name: "",
@@ -144,11 +122,7 @@ const UploadForm = () => {
   const handlePost = async () => {
     const foundMissingInputs = checkForMissingInputs();
     if (foundMissingInputs === false) {
-      await fetchHandler(
-        "http://localhost:8000/api/hawk",
-        "POST",
-        cleanedFormData
-      );
+      await fetchHandler("api/hawk", "POST", cleanedFormData);
       incrementCounter();
       resetForm();
     }
@@ -158,22 +132,14 @@ const UploadForm = () => {
   const handleUpdate = async (id: string) => {
     const foundMissingInputs = checkForMissingInputs();
     if (foundMissingInputs === false) {
-      fetchHandler(
-        `http://localhost:8000/api/hawk/${id}`,
-        "PUT",
-        cleanedFormData
-      );
+      fetchHandler(`api/hawk/${id}`, "PUT", cleanedFormData);
       resetForm();
       setUpdateMode(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    fetchHandler(
-      `http://localhost:8000/api/hawk/${id}`,
-      "DELETE",
-      cleanedFormData
-    );
+    fetchHandler(`api/hawk/${id}`, "DELETE", cleanedFormData);
     resetForm();
     setUpdateMode(false);
   };
