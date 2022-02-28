@@ -5,15 +5,14 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Slider,
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useGetHawkContext } from "../../context";
+import { fetchHandler } from "../../utils";
 import { StyledWrapper } from "../SelectionGrid/SelectionGrid";
 
 interface IHawkFormData {
@@ -40,9 +39,10 @@ export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
 };
 
 const UploadForm = () => {
-  const [updateHawk, setUpdateHawk] = useState(false);
-  const hawks = useGetHawkContext();
-  console.log(hawks.state.currentHawk);
+  const [updateMode, setUpdateMode] = useState(false);
+  const {
+    state: { currentHawk: currSelectedHawk },
+  } = useGetHawkContext();
 
   const defaultFormState: IHawkFormData = {
     name: "",
@@ -60,7 +60,8 @@ const UploadForm = () => {
   const [formData, setFormData] = useState<IHawkFormData>(defaultFormState);
 
   useEffect(() => {
-    if (hawks.state.currentHawk) {
+    if (currSelectedHawk) {
+      setUpdateMode(true);
       const {
         name,
         size,
@@ -69,8 +70,7 @@ const UploadForm = () => {
         colorDescription,
         behaviorDescription,
         habitatDescription,
-      } = hawks.state.currentHawk;
-      setUpdateHawk(true);
+      } = currSelectedHawk;
       setFormData({
         name,
         size,
@@ -79,21 +79,12 @@ const UploadForm = () => {
         colorDescription,
         behaviorDescription,
         habitatDescription,
-        length: [
-          hawks.state.currentHawk.lengthBegin,
-          hawks.state.currentHawk.lengthEnd,
-        ],
-        wingspan: [
-          hawks.state.currentHawk.lengthBegin,
-          hawks.state.currentHawk.lengthEnd,
-        ],
-        weight: [
-          hawks.state.currentHawk.lengthBegin,
-          hawks.state.currentHawk.lengthEnd,
-        ],
+        length: [currSelectedHawk.lengthBegin, currSelectedHawk.lengthEnd],
+        wingspan: [currSelectedHawk.lengthBegin, currSelectedHawk.lengthEnd],
+        weight: [currSelectedHawk.lengthBegin, currSelectedHawk.lengthEnd],
       });
     }
-  }, [hawks.state.currentHawk]);
+  }, [currSelectedHawk]);
 
   const handleInputChange = (e: any) => {
     const target = e.target.name;
@@ -131,60 +122,30 @@ const UploadForm = () => {
     setFormData(defaultFormState);
   };
 
-  // todo - choose a working solution, at least let it work on dev.
+  // * form handlers
   const handleUpload = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/api/hawk", {
-        method: "POST",
-        headers: {
-          Accept: "application/json, text/plain",
-          "Content-Type": "application/json;charset=UTF-8",
-        },
-        // mode: "no-cors", // todo - cannot no-cors on post?
-        body: JSON.stringify(cleanedFormData),
-      });
-
-      resetForm();
-      console.log({ response });
-    } catch (error) {
-      console.log({ error });
-    }
+    fetchHandler("http://localhost:8000/api/hawk", "POST", cleanedFormData);
+    resetForm();
   };
 
   const handleUpdate = async (id: string) => {
-    try {
-      const response = await fetch(`http://localhost:8000/api/hawk/${id}`, {
-        method: "PUT",
-        headers: {
-          Accept: "application/json, text/plain",
-          "Content-Type": "application/json;charset=UTF-8",
-        },
-        // mode: "no-cors", // todo - cannot no-cors on post?
-        body: JSON.stringify(cleanedFormData),
-      });
-      resetForm();
-      console.log({ response });
-      setUpdateHawk(false);
-    } catch (error) {
-      console.log({ error });
-    }
+    fetchHandler(
+      `http://localhost:8000/api/hawk/${id}`,
+      "PUT",
+      cleanedFormData
+    );
+    resetForm();
+    setUpdateMode(false);
   };
 
   const handleDelete = async (id: string) => {
-    try {
-      const response = await fetch(`http://localhost:8000/api/hawk/${id}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json, text/plain",
-          "Content-Type": "application/json;charset=UTF-8",
-        },
-      });
-      resetForm();
-      console.log({ response });
-      setUpdateHawk(false);
-    } catch (error) {
-      console.log({ error });
-    }
+    fetchHandler(
+      `http://localhost:8000/api/hawk/${id}`,
+      "DELETE",
+      cleanedFormData
+    );
+    resetForm();
+    setUpdateMode(false);
   };
 
   // ? although I destructured the formData object above; I have a personal preference for using attributes
@@ -356,21 +317,17 @@ const UploadForm = () => {
             variant="filled"
           />
         </SelectionWrapper>
-        {updateHawk ? (
+        {updateMode ? (
           <ButtonBar>
             <StyledButton
-              onClick={() =>
-                handleDelete(hawks.state.currentHawk?.id as string)
-              }
+              onClick={() => handleDelete(currSelectedHawk?.id as string)}
               color="primary"
               variant="outlined"
             >
               Delete
             </StyledButton>
             <StyledButton
-              onClick={() =>
-                handleUpdate(hawks.state.currentHawk?.id as string)
-              }
+              onClick={() => handleUpdate(currSelectedHawk?.id as string)}
               color="primary"
               variant="contained"
             >
