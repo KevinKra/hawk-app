@@ -17,9 +17,9 @@ const fetchHandler = async (
       headers: {
         Accept: "application/json, text/plain",
         "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
       },
-      // mode: "no-cors", // todo - cannot no-cors on post?
-      body: JSON.stringify(body), // todo - body not needed for DLT, seems fine though
+      body: JSON.stringify(body), //
     });
     return handleResponse(true, `${method} operation succeeded.`, response);
   } catch (error) {

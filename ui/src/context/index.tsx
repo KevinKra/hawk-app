@@ -20,9 +20,16 @@ function HawkProvider({ children }: any) {
   useEffect(() => {
     const GetHawks = async () => {
       try {
-        const response = await $axios.get(
-          "http://localhost:8000/api/hawk/list"
-        );
+        // const response = await fetch("http://localhost:8000/api/hawk/list", {
+        //   method: "GET",
+        //   headers: {
+        //     Accept: "application/json",
+        //     "Content-Type": "application/json;charset=UTF-8",
+        //     "Access-Control-Allow-Origin": "*",
+        //   },
+        //   mode: "no-cors",
+        // });
+        const response = await $axios.get("/api/hawk/list");
         setAllHawks(response.data.hawks);
       } catch (error) {
         console.log({ error });
