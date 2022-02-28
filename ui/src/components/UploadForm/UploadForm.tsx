@@ -5,16 +5,17 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Slider,
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useGetHawkContext } from "../../context";
+import { fetchHandler } from "../../utils";
+import { StyledWrapper } from "../SelectionGrid/SelectionGrid";
 
-interface IUploadForm {
+interface IHawkFormData {
   name: string;
   size: "SMALL" | "MEDIUM" | "LARGE";
   gender: "MALE" | "FEMALE";
@@ -27,8 +28,26 @@ interface IUploadForm {
   habitatDescription: string;
 }
 
+export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
+  id?: string;
+  lengthBegin: number;
+  lengthEnd: number;
+  wingspanBegin: number;
+  wingspanEnd: number;
+  weightEnd: number;
+  weightBegin: number;
+};
+
 const UploadForm = () => {
-  const [formData, setFormData] = useState<IUploadForm>({
+  const [updateMode, setUpdateMode] = useState(false);
+  const [formError, setFormError] = useState(false);
+  const {
+    state: { currentHawk: currSelectedHawk },
+    resetHawk,
+    incrementCounter,
+  } = useGetHawkContext();
+
+  const defaultFormState: IHawkFormData = {
     name: "",
     size: "SMALL",
     gender: "MALE",
@@ -39,7 +58,39 @@ const UploadForm = () => {
     colorDescription: "",
     behaviorDescription: "",
     habitatDescription: "",
-  });
+  };
+
+  const [formData, setFormData] = useState<IHawkFormData>(defaultFormState);
+
+  useEffect(() => {
+    if (currSelectedHawk) {
+      setUpdateMode(true);
+      const {
+        name,
+        size,
+        gender,
+        pictureUrl,
+        colorDescription,
+        behaviorDescription,
+        habitatDescription,
+      } = currSelectedHawk;
+      setFormData({
+        name,
+        size,
+        gender,
+        pictureUrl,
+        colorDescription,
+        behaviorDescription,
+        habitatDescription,
+        length: [currSelectedHawk.lengthBegin, currSelectedHawk.lengthEnd],
+        wingspan: [
+          currSelectedHawk.wingspanBegin,
+          currSelectedHawk.wingspanEnd,
+        ],
+        weight: [currSelectedHawk.weightBegin, currSelectedHawk.weightEnd],
+      });
+    }
+  }, [currSelectedHawk]);
 
   const handleInputChange = (e: any) => {
     const target = e.target.name;
@@ -57,7 +108,7 @@ const UploadForm = () => {
     habitatDescription,
   } = formData;
 
-  const cleanedFormData = {
+  const cleanedFormData: HawkData = {
     name,
     size,
     gender,
@@ -73,198 +124,270 @@ const UploadForm = () => {
     weightEnd: formData.weight[1],
   };
 
-  const handleUpload = async () => {
-    try {
-      await axios.post("http://localhost:8000/api/hawk", cleanedFormData);
-    } catch (error) {
-      console.log({ error });
+  const resetForm = () => {
+    setFormData(defaultFormState);
+    resetHawk();
+  };
+
+  const checkForMissingInputs = () => {
+    const formValues = Object.values(formData);
+    // ? search for any empty strings (no input)
+    const missingInputs = formValues.some((value) => value === "");
+    if (missingInputs) {
+      setFormError(true);
+      return true;
     }
+    setFormError(false);
+    return false;
+  };
+
+  // * form handlers
+  const handleUpload = async () => {
+    const foundMissingInputs = checkForMissingInputs();
+    if (foundMissingInputs === false) {
+      await fetchHandler(
+        "http://localhost:8000/api/hawk",
+        "POST",
+        cleanedFormData
+      );
+      incrementCounter();
+      resetForm();
+    }
+    // todo - set warning
+  };
+
+  const handleUpdate = async (id: string) => {
+    const foundMissingInputs = checkForMissingInputs();
+    if (foundMissingInputs === false) {
+      fetchHandler(
+        `http://localhost:8000/api/hawk/${id}`,
+        "PUT",
+        cleanedFormData
+      );
+      resetForm();
+      setUpdateMode(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    fetchHandler(
+      `http://localhost:8000/api/hawk/${id}`,
+      "DELETE",
+      cleanedFormData
+    );
+    resetForm();
+    setUpdateMode(false);
   };
 
   // ? although I destructured the formData object above; I have a personal preference for using attributes
   // ? for more readability when possible (like below).
   return (
-    <StyledPaper elevation={3}>
-      <SelectionWrapper>
-        <Typography className="selection-title" fontWeight={500}>
-          Name
-        </Typography>
-        <TextField
-          fullWidth
-          id="name"
-          label="Name*"
-          placeholder="Osprey"
-          variant="outlined"
-          name="name"
-          value={formData.name}
-          onChange={handleInputChange}
-        />
-      </SelectionWrapper>
-      <SelectionWrapper>
-        <Typography className="selection-title" fontWeight={500}>
-          Size
-        </Typography>
-        <FormControl fullWidth>
-          <InputLabel id="hawk-size-label">Size</InputLabel>
-          <Select
-            labelId="hawk-size-label"
-            id="hawk-size"
-            value={formData.size}
-            label="Size"
-            name="size"
+    <StyledWrapper elevation={3}>
+      <FormContents>
+        <SelectionWrapper>
+          <Typography className="selection-title" fontWeight={500}>
+            Name
+          </Typography>
+          <TextField
+            fullWidth
+            inputProps={{ maxLength: 18 }}
+            id="name"
+            label="Name*"
+            placeholder="Osprey"
+            variant="outlined"
+            name="name"
+            value={formData.name}
             onChange={handleInputChange}
-          >
-            <MenuItem value={"SMALL"}>Small</MenuItem>
-            <MenuItem value={"MEDIUM"}>Medium</MenuItem>
-            <MenuItem value={"LARGE"}>Large</MenuItem>
-          </Select>
-        </FormControl>
-      </SelectionWrapper>
-      <SelectionWrapper>
-        <Typography className="selection-title" fontWeight={500}>
-          Gender
-        </Typography>
-        <FormControl fullWidth>
-          <InputLabel id="hawk-gender-label">Gender</InputLabel>
-          <Select
-            labelId="hawk-gender-label"
-            id="hawk-gender"
-            value={formData.gender}
-            label="Gender"
-            name="gender"
+            error={formError && !Boolean(formData.name)}
+          />
+        </SelectionWrapper>
+        <SelectionWrapper>
+          <Typography className="selection-title" fontWeight={500}>
+            Size
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="hawk-size-label">Size</InputLabel>
+            <Select
+              labelId="hawk-size-label"
+              id="hawk-size"
+              value={formData.size}
+              label="Size"
+              name="size"
+              onChange={handleInputChange}
+              error={formError && !Boolean(formData.size)}
+            >
+              <MenuItem value={"SMALL"}>Small</MenuItem>
+              <MenuItem value={"MEDIUM"}>Medium</MenuItem>
+              <MenuItem value={"LARGE"}>Large</MenuItem>
+            </Select>
+          </FormControl>
+        </SelectionWrapper>
+        <SelectionWrapper>
+          <Typography className="selection-title" fontWeight={500}>
+            Gender
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="hawk-gender-label">Gender</InputLabel>
+            <Select
+              labelId="hawk-gender-label"
+              id="hawk-gender"
+              value={formData.gender}
+              label="Gender"
+              name="gender"
+              onChange={handleInputChange}
+              error={formError && !Boolean(formData.gender)}
+            >
+              <MenuItem value={"MALE"}>Male</MenuItem>
+              <MenuItem value={"FEMALE"}>Female</MenuItem>
+            </Select>
+          </FormControl>
+        </SelectionWrapper>
+        <StyledDivider />
+        <SelectionWrapper>
+          <div className="selection-title">
+            <Typography fontWeight={500}>{`Length`}</Typography>
+            <Typography variant="overline">{`${formData.length[0]} - ${formData.length[1]} cm`}</Typography>
+          </div>
+          <Slider
+            size="small"
+            getAriaLabel={() => "length"}
+            name="length"
+            value={formData.length}
             onChange={handleInputChange}
-          >
-            <MenuItem value={"MALE"}>Male</MenuItem>
-            <MenuItem value={"FEMALE"}>Female</MenuItem>
-          </Select>
-        </FormControl>
-      </SelectionWrapper>
-      <StyledDivider />
-      <SelectionWrapper>
-        <div className="selection-title">
-          <Typography fontWeight={500}>{`Length`}</Typography>
-          <Typography variant="overline">{`${formData.length[0]} - ${formData.length[1]} cm`}</Typography>
-        </div>
-        <Slider
-          size="small"
-          getAriaLabel={() => "length"}
-          name="length"
-          value={formData.length}
-          onChange={handleInputChange}
-          valueLabelDisplay="auto"
-          min={5}
-          max={125}
-        />
-      </SelectionWrapper>
-      <SelectionWrapper>
-        <div className="selection-title">
-          <Typography fontWeight={500}>{`Wingspan`}</Typography>
-          <Typography variant="overline">{`${formData.wingspan[0]} - ${formData.wingspan[1]} cm`}</Typography>
-        </div>
-        <Slider
-          size="small"
-          getAriaLabel={() => "wingspan"}
-          name="wingspan"
-          value={formData.wingspan}
-          onChange={handleInputChange}
-          valueLabelDisplay="auto"
-          min={5}
-          max={125}
-        />
-      </SelectionWrapper>
-      <SelectionWrapper>
-        <div className="selection-title">
-          <Typography fontWeight={500}>{`Weight`}</Typography>
-          <Typography variant="overline">{`${formData.weight[0]} - ${formData.weight[1]} grams`}</Typography>
-        </div>
-        <Slider
-          size="small"
-          getAriaLabel={() => "weight"}
-          name="weight"
-          value={formData.weight}
-          onChange={handleInputChange}
-          valueLabelDisplay="auto"
-          min={5}
-          max={250}
-        />
-      </SelectionWrapper>
-      <StyledDivider />
-      <SelectionWrapper>
-        <Typography className="selection-title" fontWeight={500}>
-          Image
-        </Typography>
-        <TextField
-          fullWidth
-          id="name"
-          label="Image*"
-          name="pictureUrl"
-          value={formData.pictureUrl}
-          placeholder="link to image"
-          onChange={handleInputChange}
-          variant="outlined"
-        />
-      </SelectionWrapper>
-      <SelectionWrapper vertical>
-        <Typography className="selection-title" fontWeight={500}>
-          Color
-        </Typography>
-        <TextField
-          fullWidth
-          label="Describe the hawk's color."
-          multiline
-          rows={3}
-          name="colorDescription"
-          value={formData.colorDescription}
-          onChange={handleInputChange}
-          variant="filled"
-        />
-      </SelectionWrapper>
-      <SelectionWrapper vertical>
-        <Typography className="selection-title" fontWeight={500}>
-          Behavior
-        </Typography>
-        <TextField
-          fullWidth
-          label="Describe the hawk's behavior."
-          multiline
-          rows={3}
-          name="behaviorDescription"
-          value={formData.behaviorDescription}
-          onChange={handleInputChange}
-          variant="filled"
-        />
-      </SelectionWrapper>
-      <SelectionWrapper vertical>
-        <Typography className="selection-title" fontWeight={500}>
-          Habitat
-        </Typography>
-        <TextField
-          fullWidth
-          label="Describe the hawk's habitat."
-          multiline
-          rows={3}
-          name="habitatDescription"
-          value={formData.habitatDescription}
-          onChange={handleInputChange}
-          variant="filled"
-        />
-      </SelectionWrapper>
-      <StyledButton onClick={handleUpload} variant="contained">
-        Save
-      </StyledButton>
-    </StyledPaper>
+            valueLabelDisplay="auto"
+            min={5}
+            max={125}
+          />
+        </SelectionWrapper>
+        <SelectionWrapper>
+          <div className="selection-title">
+            <Typography fontWeight={500}>{`Wingspan`}</Typography>
+            <Typography variant="overline">{`${formData.wingspan[0]} - ${formData.wingspan[1]} cm`}</Typography>
+          </div>
+          <Slider
+            size="small"
+            getAriaLabel={() => "wingspan"}
+            name="wingspan"
+            value={formData.wingspan}
+            onChange={handleInputChange}
+            valueLabelDisplay="auto"
+            min={5}
+            max={125}
+          />
+        </SelectionWrapper>
+        <SelectionWrapper>
+          <div className="selection-title">
+            <Typography fontWeight={500}>{`Weight`}</Typography>
+            <Typography variant="overline">{`${formData.weight[0]} - ${formData.weight[1]} grams`}</Typography>
+          </div>
+          <Slider
+            size="small"
+            getAriaLabel={() => "weight"}
+            name="weight"
+            value={formData.weight}
+            onChange={handleInputChange}
+            valueLabelDisplay="auto"
+            min={5}
+            max={250}
+          />
+        </SelectionWrapper>
+        <StyledDivider />
+        <SelectionWrapper>
+          <Typography className="selection-title" fontWeight={500}>
+            Image
+          </Typography>
+          <TextField
+            fullWidth
+            id="name"
+            label="Image*"
+            name="pictureUrl"
+            value={formData.pictureUrl}
+            placeholder="link to image"
+            onChange={handleInputChange}
+            variant="outlined"
+            error={formError && !Boolean(formData.pictureUrl)}
+          />
+        </SelectionWrapper>
+        <SelectionWrapper vertical>
+          <Typography className="selection-title" fontWeight={500}>
+            Color
+          </Typography>
+          <TextField
+            fullWidth
+            label="Describe the hawk's color."
+            multiline
+            rows={3}
+            name="colorDescription"
+            value={formData.colorDescription}
+            onChange={handleInputChange}
+            variant="filled"
+            error={formError && !Boolean(formData.colorDescription)}
+          />
+        </SelectionWrapper>
+        <SelectionWrapper vertical>
+          <Typography className="selection-title" fontWeight={500}>
+            Behavior
+          </Typography>
+          <TextField
+            fullWidth
+            label="Describe the hawk's behavior."
+            multiline
+            rows={3}
+            name="behaviorDescription"
+            value={formData.behaviorDescription}
+            onChange={handleInputChange}
+            variant="filled"
+            error={formError && !Boolean(formData.behaviorDescription)}
+          />
+        </SelectionWrapper>
+        <SelectionWrapper vertical>
+          <Typography className="selection-title" fontWeight={500}>
+            Habitat
+          </Typography>
+          <TextField
+            fullWidth
+            label="Describe the hawk's habitat."
+            multiline
+            rows={3}
+            name="habitatDescription"
+            value={formData.habitatDescription}
+            onChange={handleInputChange}
+            variant="filled"
+            error={formError && !Boolean(formData.habitatDescription)}
+          />
+        </SelectionWrapper>
+        {updateMode ? (
+          <ButtonBar>
+            <StyledButton
+              onClick={() => handleDelete(currSelectedHawk?.id as string)}
+              color="error"
+              variant="outlined"
+            >
+              Delete
+            </StyledButton>
+            <StyledButton
+              onClick={() => handleUpdate(currSelectedHawk?.id as string)}
+              color="primary"
+              variant="contained"
+            >
+              Update
+            </StyledButton>
+          </ButtonBar>
+        ) : (
+          <StyledButton onClick={handleUpload} variant="contained">
+            Save
+          </StyledButton>
+        )}
+      </FormContents>
+    </StyledWrapper>
   );
 };
 
 export default UploadForm;
 
-const StyledPaper = styled(Paper)`
+export const FormContents = styled("div")`
   display: grid;
   grid-gap: 1rem;
-  padding: 1rem;
-  margin: 1rem;
-  width: 550px;
-  border: 1px solid #ddd;
 `;
 
 const StyledDivider = styled(Divider)`
@@ -284,6 +407,12 @@ const SelectionWrapper = styled("form")<{ vertical?: boolean }>`
   .selection-title {
     justify-self: flex-start;
   }
+`;
+
+const ButtonBar = styled("div")`
+  display: grid;
+  grid-template-columns: 1.25fr 3fr;
+  grid-column-gap: 1rem;
 `;
 
 const StyledButton = styled(Button)`
