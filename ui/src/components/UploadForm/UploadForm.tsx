@@ -40,6 +40,7 @@ export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
 
 const UploadForm = () => {
   const [updateMode, setUpdateMode] = useState(false);
+  const [formError, setFormError] = useState(false);
   const {
     state: { currentHawk: currSelectedHawk },
   } = useGetHawkContext();
@@ -122,20 +123,39 @@ const UploadForm = () => {
     setFormData(defaultFormState);
   };
 
+  const checkForMissingInputs = () => {
+    const formValues = Object.values(formData);
+    // ? search for any empty strings (no input)
+    const missingInputs = formValues.some((value) => value === "");
+    if (missingInputs) {
+      setFormError(true);
+      return true;
+    }
+    setFormError(false);
+    return false;
+  };
+
   // * form handlers
   const handleUpload = async () => {
-    fetchHandler("http://localhost:8000/api/hawk", "POST", cleanedFormData);
-    resetForm();
+    const foundMissingInputs = checkForMissingInputs();
+    if (foundMissingInputs === false) {
+      fetchHandler("http://localhost:8000/api/hawk", "POST", cleanedFormData);
+      resetForm();
+    }
+    // todo - set warning
   };
 
   const handleUpdate = async (id: string) => {
-    fetchHandler(
-      `http://localhost:8000/api/hawk/${id}`,
-      "PUT",
-      cleanedFormData
-    );
-    resetForm();
-    setUpdateMode(false);
+    const foundMissingInputs = checkForMissingInputs();
+    if (foundMissingInputs === false) {
+      fetchHandler(
+        `http://localhost:8000/api/hawk/${id}`,
+        "PUT",
+        cleanedFormData
+      );
+      resetForm();
+      setUpdateMode(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -166,6 +186,7 @@ const UploadForm = () => {
             name="name"
             value={formData.name}
             onChange={handleInputChange}
+            error={formError && !Boolean(formData.name)}
           />
         </SelectionWrapper>
         <SelectionWrapper>
@@ -181,6 +202,7 @@ const UploadForm = () => {
               label="Size"
               name="size"
               onChange={handleInputChange}
+              error={formError && !Boolean(formData.size)}
             >
               <MenuItem value={"SMALL"}>Small</MenuItem>
               <MenuItem value={"MEDIUM"}>Medium</MenuItem>
@@ -201,6 +223,7 @@ const UploadForm = () => {
               label="Gender"
               name="gender"
               onChange={handleInputChange}
+              error={formError && !Boolean(formData.gender)}
             >
               <MenuItem value={"MALE"}>Male</MenuItem>
               <MenuItem value={"FEMALE"}>Female</MenuItem>
@@ -270,6 +293,7 @@ const UploadForm = () => {
             placeholder="link to image"
             onChange={handleInputChange}
             variant="outlined"
+            error={formError && !Boolean(formData.pictureUrl)}
           />
         </SelectionWrapper>
         <SelectionWrapper vertical>
@@ -285,6 +309,7 @@ const UploadForm = () => {
             value={formData.colorDescription}
             onChange={handleInputChange}
             variant="filled"
+            error={formError && !Boolean(formData.colorDescription)}
           />
         </SelectionWrapper>
         <SelectionWrapper vertical>
@@ -300,6 +325,7 @@ const UploadForm = () => {
             value={formData.behaviorDescription}
             onChange={handleInputChange}
             variant="filled"
+            error={formError && !Boolean(formData.behaviorDescription)}
           />
         </SelectionWrapper>
         <SelectionWrapper vertical>
@@ -315,6 +341,7 @@ const UploadForm = () => {
             value={formData.habitatDescription}
             onChange={handleInputChange}
             variant="filled"
+            error={formError && !Boolean(formData.habitatDescription)}
           />
         </SelectionWrapper>
         {updateMode ? (
