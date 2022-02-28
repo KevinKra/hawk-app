@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useGetHawkContext } from "../../context";
 import { fetchHandler } from "../../utils";
+import { $axios } from "../../utils/axios";
 import { StyledWrapper } from "../SelectionGrid/SelectionGrid";
 
 interface IHawkFormData {
@@ -44,7 +45,7 @@ const UploadForm = () => {
   const {
     state: { currentHawk: currSelectedHawk },
     resetHawk,
-    setHawk,
+    incrementCounter,
   } = useGetHawkContext();
 
   const defaultFormState: IHawkFormData = {
@@ -142,15 +143,13 @@ const UploadForm = () => {
   const handleUpload = async () => {
     const foundMissingInputs = checkForMissingInputs();
     if (foundMissingInputs === false) {
-      const response = await fetchHandler(
+      await fetchHandler(
         "http://localhost:8000/api/hawk",
         "POST",
         cleanedFormData
       );
-      console.log("r", response.data.body);
-      // ? cleanedFormData does not have the id on it used for searching
-      setHawk(cleanedFormData);
-      //   resetForm();
+      incrementCounter();
+      resetForm();
     }
     // todo - set warning
   };

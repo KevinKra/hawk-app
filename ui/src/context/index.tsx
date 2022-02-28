@@ -7,17 +7,17 @@ const HawkContext = React.createContext<
       state: { allHawks: HawkData[]; currentHawk: HawkData | undefined };
       selectHawk: any;
       resetHawk: any;
-      setHawk: any;
+      incrementCounter: () => void;
     }
   | undefined
 >(undefined);
 
 function HawkProvider({ children }: any) {
+  const [counter, setCounter] = useState(0);
   const [currentHawk, setCurrentHawk] = useState<HawkData>();
   const [allHawks, setAllHawks] = useState<HawkData[]>([]);
 
   useEffect(() => {
-    console.log("r", allHawks, currentHawk);
     const GetHawks = async () => {
       try {
         const response = await $axios.get(
@@ -29,7 +29,7 @@ function HawkProvider({ children }: any) {
       }
     };
     GetHawks();
-  }, [currentHawk]);
+  }, [currentHawk, counter]);
 
   const selectCurrentHawk = (id: string) => {
     const selectedHawk = allHawks.find((hawk) => {
@@ -43,13 +43,18 @@ function HawkProvider({ children }: any) {
     setCurrentHawk(undefined);
   };
 
+  const incrementCounter = () => {
+    // ? workaround - current database setup doesn't return data in response
+    setCounter((counter) => counter + 1);
+  };
+
   return (
     <HawkContext.Provider
       value={{
         state: { allHawks, currentHawk },
         selectHawk: selectCurrentHawk,
         resetHawk: resetCurrentHawk,
-        setHawk: setCurrentHawk,
+        incrementCounter,
       }}
     >
       {children}
