@@ -19,7 +19,7 @@ const fetchHandler = async (
         "Content-Type": "application/json;charset=UTF-8",
         "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify(body), //
+      body: JSON.stringify(body),
     });
     return handleResponse(true, `${method} operation succeeded.`, response);
   } catch (error) {

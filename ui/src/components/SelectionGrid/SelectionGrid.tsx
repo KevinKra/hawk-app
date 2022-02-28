@@ -9,7 +9,10 @@ import { useGetHawkContext } from "../../context";
 // todo - and more!
 
 const SelectionGrid = () => {
-  const hawks = useGetHawkContext();
+  const {
+    state: { allHawks },
+    selectHawk,
+  } = useGetHawkContext();
 
   return (
     <StyledWrapper>
@@ -37,13 +40,13 @@ const SelectionGrid = () => {
             Gender
           </Typography>
         </GridHeader>
-        {hawks.state.allHawks.map(({ id, name, size, gender }) => {
+        {allHawks.map(({ id, name, size, gender }) => {
           return (
             <GridRow key={id}>
               <Typography>{name.toLowerCase()}</Typography>
               <Typography>{size.toLowerCase()}</Typography>
               <Typography>{gender.toLowerCase()}</Typography>
-              <Button onClick={() => hawks.selectHawk(id)}>View</Button>
+              <Button onClick={() => selectHawk(id)}>View</Button>
             </GridRow>
           );
         })}
