@@ -44,7 +44,7 @@ const UploadForm = () => {
   const hawks = useGetHawkContext();
   console.log(hawks.state.currentHawk);
 
-  const [formData, setFormData] = useState<IHawkFormData>({
+  const defaultFormState: IHawkFormData = {
     name: "",
     size: "SMALL",
     gender: "MALE",
@@ -55,7 +55,9 @@ const UploadForm = () => {
     colorDescription: "",
     behaviorDescription: "",
     habitatDescription: "",
-  });
+  };
+
+  const [formData, setFormData] = useState<IHawkFormData>(defaultFormState);
 
   useEffect(() => {
     if (hawks.state.currentHawk) {
@@ -125,6 +127,10 @@ const UploadForm = () => {
     weightEnd: formData.weight[1],
   };
 
+  const resetForm = () => {
+    setFormData(defaultFormState);
+  };
+
   // todo - choose a working solution, at least let it work on dev.
   const handleUpload = async () => {
     try {
@@ -138,6 +144,7 @@ const UploadForm = () => {
         body: JSON.stringify(cleanedFormData),
       });
 
+      resetForm();
       console.log({ response });
     } catch (error) {
       console.log({ error });
@@ -155,6 +162,7 @@ const UploadForm = () => {
         // mode: "no-cors", // todo - cannot no-cors on post?
         body: JSON.stringify(cleanedFormData),
       });
+      resetForm();
       console.log({ response });
       setUpdateHawk(false);
     } catch (error) {
@@ -171,6 +179,7 @@ const UploadForm = () => {
           "Content-Type": "application/json;charset=UTF-8",
         },
       });
+      resetForm();
       console.log({ response });
       setUpdateHawk(false);
     } catch (error) {
