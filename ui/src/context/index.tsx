@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HawkData } from "../components/UploadForm/UploadForm";
+import { HawkData } from "../types";
 
 const HawkContext = React.createContext<
   | {
@@ -17,6 +17,8 @@ function HawkProvider({ children }: any) {
   const [allHawks, setAllHawks] = useState<HawkData[]>([]);
 
   useEffect(() => {
+    // ? every time the hawk value is updated or the counter increments
+    // ? re-fetch all hawks for grid display.
     const GetHawks = async () => {
       try {
         const response = await fetch("http://localhost:8000/api/hawk/list", {
@@ -44,7 +46,7 @@ function HawkProvider({ children }: any) {
   };
 
   const incrementCounter = () => {
-    // ? workaround - current database setup doesn't return data in response
+    // ? workaround - current database setup doesn't return data in response + edge case
     setCounter((counter) => counter + 1);
   };
 

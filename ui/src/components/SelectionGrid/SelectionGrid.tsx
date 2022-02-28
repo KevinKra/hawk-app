@@ -59,11 +59,11 @@ export default SelectionGrid;
 export const StyledWrapper = styled(Paper)`
   position: sticky;
   top: 1rem;
-  border: 1px solid red;
+  height: fit-content;
+
   padding: 1rem;
   margin: 1rem;
   border: 1px solid #ddd;
-  height: fit-content;
 `;
 
 const GridWrapper = styled("div")`
@@ -94,9 +94,9 @@ const GridBase = styled("div")`
 `;
 
 const GridHeader = styled(GridBase)`
-  // ? feature style features here
+  // ? future style features here
 `;
 
 const GridRow = styled(GridBase)`
-  // ? feature style features here
+  // ? future style features here
 `;

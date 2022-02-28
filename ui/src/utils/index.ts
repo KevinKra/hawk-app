@@ -7,12 +7,12 @@ const handleResponse = (success: boolean, message: string, data?: any) => {
 };
 
 const fetchHandler = async (
-  url: string,
+  uri: string,
   method: "POST" | "PUT" | "DELETE",
   body: any
 ) => {
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`http://localhost:8000/${uri}`, {
       method,
       headers: {
         "Content-Type": "application/json",
