@@ -13,7 +13,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { useGetHawkContext } from "../../context";
 import { fetchHandler } from "../../utils";
-import { $axios } from "../../utils/axios";
 import { StyledWrapper } from "../SelectionGrid/SelectionGrid";
 
 interface IHawkFormData {
@@ -84,8 +83,11 @@ const UploadForm = () => {
         behaviorDescription,
         habitatDescription,
         length: [currSelectedHawk.lengthBegin, currSelectedHawk.lengthEnd],
-        wingspan: [currSelectedHawk.lengthBegin, currSelectedHawk.lengthEnd],
-        weight: [currSelectedHawk.lengthBegin, currSelectedHawk.lengthEnd],
+        wingspan: [
+          currSelectedHawk.wingspanBegin,
+          currSelectedHawk.wingspanEnd,
+        ],
+        weight: [currSelectedHawk.weightBegin, currSelectedHawk.weightEnd],
       });
     }
   }, [currSelectedHawk]);
@@ -188,6 +190,7 @@ const UploadForm = () => {
           </Typography>
           <TextField
             fullWidth
+            inputProps={{ maxLength: 18 }}
             id="name"
             label="Name*"
             placeholder="Osprey"
@@ -357,7 +360,7 @@ const UploadForm = () => {
           <ButtonBar>
             <StyledButton
               onClick={() => handleDelete(currSelectedHawk?.id as string)}
-              color="primary"
+              color="error"
               variant="outlined"
             >
               Delete

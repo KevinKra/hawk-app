@@ -21,8 +21,6 @@ const fetchHandler = async (
       // mode: "no-cors", // todo - cannot no-cors on post?
       body: JSON.stringify(body), // todo - body not needed for DLT, seems fine though
     });
-
-    console.log({ response });
     return handleResponse(true, `${method} operation succeeded.`, response);
   } catch (error) {
     console.log({ error });

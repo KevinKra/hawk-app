@@ -3,10 +3,7 @@ import React from "react";
 import { useGetHawkContext } from "../../context";
 
 // todo - set current selection viewable from both components
-// todo - validate inputs
 // todo - configure sortable grid + buttons
-// todo - configure hawk update
-// todo - configure hawk delete
 // todo - adjust casing methods for column data
 // todo - resolve build/dev cors error
 
@@ -57,11 +54,13 @@ const SelectionGrid = () => {
 export default SelectionGrid;
 
 export const StyledWrapper = styled(Paper)`
+  position: sticky;
+  top: 1rem;
   border: 1px solid red;
   padding: 1rem;
   margin: 1rem;
-  width: 550px;
   border: 1px solid #ddd;
+  height: fit-content;
 `;
 
 const GridWrapper = styled("div")`
