@@ -17,9 +17,27 @@ const SelectionGrid = () => {
     <StyledWrapper>
       <GridWrapper>
         <GridHeader>
-          <Typography>Name</Typography>
-          <Typography>Size</Typography>
-          <Typography>Gender</Typography>
+          <Typography
+            className="header-item"
+            fontWeight={800}
+            variant="subtitle1"
+          >
+            Name
+          </Typography>
+          <Typography
+            className="header-item"
+            fontWeight={800}
+            variant="subtitle1"
+          >
+            Size
+          </Typography>
+          <Typography
+            className="header-item"
+            fontWeight={800}
+            variant="subtitle1"
+          >
+            Gender
+          </Typography>
         </GridHeader>
         {hawks.state.allHawks.map(({ id, name, size, gender }) => {
           return (
@@ -50,11 +68,15 @@ const GridWrapper = styled("div")`
   display: grid;
   grid-template-rows: auto;
 
+  .header-item {
+    padding: 0.5rem 0;
+  }
+
   div:nth-of-type(odd) {
     background-color: #ddd;
   }
-  div:nth-of-type(0) {
-    background-color: none;
+  div:nth-of-type(1) {
+    border-bottom: 1px solid #949494;
   }
 `;
 
