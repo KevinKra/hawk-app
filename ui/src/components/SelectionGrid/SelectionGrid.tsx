@@ -2,7 +2,6 @@ import { Button, Paper, styled, Typography } from "@mui/material";
 import React from "react";
 import { useGetHawkContext } from "../../context";
 
-// todo - resolve build/dev cors error
 // todo - set current selection viewable from both components
 // todo - configure sortable grid + buttons
 // todo - adjust casing methods for column data

@@ -15,9 +15,7 @@ const fetchHandler = async (
     const response = await fetch(url, {
       method,
       headers: {
-        Accept: "application/json, text/plain",
-        "Content-Type": "application/json;charset=UTF-8",
-        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     });

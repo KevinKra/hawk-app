@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { HawkData } from "../components/UploadForm/UploadForm";
-import { $axios } from "../utils/axios";
 
 const HawkContext = React.createContext<
   | {
@@ -20,18 +19,11 @@ function HawkProvider({ children }: any) {
   useEffect(() => {
     const GetHawks = async () => {
       try {
-        // ? troubleshoot solution attempt
-        // const response = await fetch("http://localhost:8000/api/hawk/list", {
-        //   method: "GET",
-        //   headers: {
-        //     Accept: "application/json",
-        //     "Content-Type": "application/json;charset=UTF-8",
-        //     "Access-Control-Allow-Origin": "*",
-        //   },
-        //   mode: "no-cors",
-        // });
-        const response = await $axios.get("/api/hawk/list");
-        setAllHawks(response.data.hawks);
+        const response = await fetch("http://localhost:8000/api/hawk/list", {
+          method: "GET",
+        });
+        const body = await response.json();
+        setAllHawks(body.hawks);
       } catch (error) {
         console.log({ error });
       }
