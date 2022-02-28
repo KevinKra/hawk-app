@@ -4,7 +4,7 @@
 
 To build and run the app locally **(after docker api setup steps below have been completed)** ...
 - `cd` into the `/ui` directory (`cd ui`)
-- run `npm run build && npm run start:serve`, this will build and launch the ui.
+- run `npm run build && npm run start:serve`, this will build and launch the ui. (or `npm run build:vis`)
 - visit `http://localhost:3000/`
 
 ---
