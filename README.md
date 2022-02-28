@@ -1,5 +1,14 @@
 # Hawk Reference App
 
+## NEW:
+
+To build and run the app locally (**after docker api setup below has been completed**) follow these steps:
+- `cd` into the `/ui` directory (`cd ui`)
+- run `npm run build && npm run start:serve`, this will build and launch the ui.
+- visit `http://localhost:3000/`
+
+---
+
 This project contains an api for managing a hawk species reference database.
 The goal of this project is for you to implement the UI screens to manage the hawk reference database.
 
