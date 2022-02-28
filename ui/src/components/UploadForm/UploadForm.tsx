@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetHawkContext } from "../../context";
 import { StyledWrapper } from "../SelectionGrid/SelectionGrid";
 
@@ -41,8 +41,7 @@ export type HawkData = Omit<IHawkFormData, "length" | "wingspan" | "weight"> & {
 
 const UploadForm = () => {
   const hawks = useGetHawkContext();
-
-  console.log("h", hawks.state.currentHawk);
+  console.log(hawks.state.currentHawk);
 
   const [formData, setFormData] = useState<IHawkFormData>({
     name: "",
@@ -56,6 +55,41 @@ const UploadForm = () => {
     behaviorDescription: "",
     habitatDescription: "",
   });
+
+  useEffect(() => {
+    if (hawks.state.currentHawk) {
+      const {
+        name,
+        size,
+        gender,
+        pictureUrl,
+        colorDescription,
+        behaviorDescription,
+        habitatDescription,
+      } = hawks.state.currentHawk;
+      setFormData({
+        name,
+        size,
+        gender,
+        pictureUrl,
+        colorDescription,
+        behaviorDescription,
+        habitatDescription,
+        length: [
+          hawks.state.currentHawk.lengthBegin,
+          hawks.state.currentHawk.lengthEnd,
+        ],
+        wingspan: [
+          hawks.state.currentHawk.lengthBegin,
+          hawks.state.currentHawk.lengthEnd,
+        ],
+        weight: [
+          hawks.state.currentHawk.lengthBegin,
+          hawks.state.currentHawk.lengthEnd,
+        ],
+      });
+    }
+  }, [hawks.state.currentHawk]);
 
   const handleInputChange = (e: any) => {
     const target = e.target.name;
