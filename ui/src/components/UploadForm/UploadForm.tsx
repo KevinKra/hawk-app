@@ -43,6 +43,8 @@ const UploadForm = () => {
   const [formError, setFormError] = useState(false);
   const {
     state: { currentHawk: currSelectedHawk },
+    resetHawk,
+    setHawk,
   } = useGetHawkContext();
 
   const defaultFormState: IHawkFormData = {
@@ -121,6 +123,7 @@ const UploadForm = () => {
 
   const resetForm = () => {
     setFormData(defaultFormState);
+    resetHawk();
   };
 
   const checkForMissingInputs = () => {
@@ -139,8 +142,15 @@ const UploadForm = () => {
   const handleUpload = async () => {
     const foundMissingInputs = checkForMissingInputs();
     if (foundMissingInputs === false) {
-      fetchHandler("http://localhost:8000/api/hawk", "POST", cleanedFormData);
-      resetForm();
+      const response = await fetchHandler(
+        "http://localhost:8000/api/hawk",
+        "POST",
+        cleanedFormData
+      );
+      console.log("r", response.data.body);
+      // ? cleanedFormData does not have the id on it used for searching
+      setHawk(cleanedFormData);
+      //   resetForm();
     }
     // todo - set warning
   };

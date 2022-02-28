@@ -23,10 +23,10 @@ const fetchHandler = async (
     });
 
     console.log({ response });
-    handleResponse(true, `${method} operation succeeded.`, response);
+    return handleResponse(true, `${method} operation succeeded.`, response);
   } catch (error) {
     console.log({ error });
-    handleResponse(false, `${method} operation failed.`);
+    return handleResponse(false, `${method} operation failed.`);
   }
 };
 

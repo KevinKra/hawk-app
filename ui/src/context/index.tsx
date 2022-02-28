@@ -6,6 +6,8 @@ const HawkContext = React.createContext<
   | {
       state: { allHawks: HawkData[]; currentHawk: HawkData | undefined };
       selectHawk: any;
+      resetHawk: any;
+      setHawk: any;
     }
   | undefined
 >(undefined);
@@ -15,22 +17,19 @@ function HawkProvider({ children }: any) {
   const [allHawks, setAllHawks] = useState<HawkData[]>([]);
 
   useEffect(() => {
-    const GetData = async () => {
+    console.log("r", allHawks, currentHawk);
+    const GetHawks = async () => {
       try {
         const response = await $axios.get(
           "http://localhost:8000/api/hawk/list"
         );
-        // const response = await fetch("http://localhost:8000/api/hawk/list", {
-        //   mode: "no-cors",
-        // });
         setAllHawks(response.data.hawks);
-        console.log({ response });
       } catch (error) {
         console.log({ error });
       }
     };
-    GetData();
-  }, []);
+    GetHawks();
+  }, [currentHawk]);
 
   const selectCurrentHawk = (id: string) => {
     const selectedHawk = allHawks.find((hawk) => {
@@ -40,11 +39,17 @@ function HawkProvider({ children }: any) {
     return selectedHawk;
   };
 
+  const resetCurrentHawk = () => {
+    setCurrentHawk(undefined);
+  };
+
   return (
     <HawkContext.Provider
       value={{
         state: { allHawks, currentHawk },
         selectHawk: selectCurrentHawk,
+        resetHawk: resetCurrentHawk,
+        setHawk: setCurrentHawk,
       }}
     >
       {children}
